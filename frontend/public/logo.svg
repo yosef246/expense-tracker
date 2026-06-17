@@ -2,24 +2,63 @@
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#6366f1"/>
-      <stop offset="100%" stop-color="#8b5cf6"/>
+      <stop offset="60%" stop-color="#8b5cf6"/>
+      <stop offset="100%" stop-color="#a78bfa"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.95)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0.75)"/>
     </linearGradient>
     <linearGradient id="shine" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="rgba(255,255,255,0.22)"/>
+      <stop offset="0%" stop-color="rgba(255,255,255,0.2)"/>
       <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
     </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="rgba(99,102,241,0.4)"/>
+    </filter>
   </defs>
-  <!-- Rounded square background -->
-  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
-  <rect width="512" height="512" rx="112" fill="url(#shine)"/>
-  <!-- ₪ symbol -->
-  <!-- Left vertical bar -->
-  <rect x="162" y="118" width="38" height="276" rx="19" fill="white"/>
-  <!-- Right vertical bar -->
-  <rect x="312" y="118" width="38" height="276" rx="19" fill="white"/>
-  <!-- Top horizontal bar -->
-  <rect x="146" y="150" width="220" height="36" rx="18" fill="white"/>
-  <!-- Bottom hook (the distinctive ₪ curve) -->
-  <path d="M 200 318 Q 200 408 308 408 Q 382 408 382 344"
-        stroke="white" stroke-width="38" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Background rounded square -->
+  <rect width="512" height="512" rx="110" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="110" fill="url(#shine)"/>
+
+  <!-- Wallet body -->
+  <rect x="80" y="160" width="352" height="230" rx="32" fill="url(#card)" filter="url(#shadow)"/>
+
+  <!-- Wallet flap (top) -->
+  <path d="M 80 192 Q 80 160 112 160 L 400 160 Q 432 160 432 192 L 432 210 L 80 210 Z"
+        fill="rgba(255,255,255,0.6)"/>
+
+  <!-- Card stripe -->
+  <rect x="80" y="210" width="352" height="40" fill="rgba(99,102,241,0.15)"/>
+
+  <!-- Wallet pocket (right side) -->
+  <rect x="310" y="255" width="122" height="90" rx="18" fill="rgba(99,102,241,0.12)" stroke="rgba(99,102,241,0.25)" stroke-width="2"/>
+
+  <!-- Coin in pocket -->
+  <circle cx="371" cy="300" r="28" fill="url(#bg)" opacity="0.9"/>
+  <!-- ₪ on coin - simplified -->
+  <rect x="360" y="284" width="6" height="32" rx="3" fill="white"/>
+  <rect x="376" y="284" width="6" height="32" rx="3" fill="white"/>
+  <rect x="356" y="291" width="22" height="5" rx="2.5" fill="white"/>
+  <!-- Hook -->
+  <path d="M 362 306 Q 362 320 374 320 Q 384 320 384 312"
+        stroke="white" stroke-width="5" fill="none" stroke-linecap="round"/>
+
+  <!-- Three card lines (left side) -->
+  <rect x="106" y="268" width="80" height="9" rx="4.5" fill="rgba(99,102,241,0.35)"/>
+  <rect x="106" y="292" width="56" height="9" rx="4.5" fill="rgba(99,102,241,0.22)"/>
+  <rect x="106" y="316" width="68" height="9" rx="4.5" fill="rgba(99,102,241,0.22)"/>
+
+  <!-- Small sparkles -->
+  <circle cx="440" cy="110" r="10" fill="rgba(255,255,255,0.6)"/>
+  <circle cx="72"  cy="130" r="6"  fill="rgba(255,255,255,0.4)"/>
+  <circle cx="420" cy="420" r="8"  fill="rgba(255,255,255,0.35)"/>
+
+  <!-- Upward trend arrow (top right, subtle) -->
+  <polyline points="340,130 370,100 400,115 430,82"
+            stroke="rgba(255,255,255,0.55)" stroke-width="8"
+            fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <polygon points="430,82 418,98 442,96"
+           fill="rgba(255,255,255,0.55)"/>
 </svg>

@@ -1,16 +1,32 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#7c3aed"/>
-      <stop offset="100%" stop-color="#0ea5e9"/>
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.95)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0.78)"/>
     </linearGradient>
   </defs>
-  <rect width="180" height="180" rx="40" fill="url(#bg)"/>
-  <!-- ₪ symbol simplified -->
-  <rect x="58" y="42" width="13" height="96" rx="6" fill="white"/>
-  <rect x="109" y="42" width="13" height="96" rx="6" fill="white"/>
-  <rect x="52" y="54" width="76" height="12" rx="6" fill="white"/>
-  <!-- Bottom hook -->
-  <path d="M 71 112 Q 71 142 106 142 Q 132 142 132 120"
-        stroke="white" stroke-width="13" fill="none" stroke-linecap="round"/>
+  <rect width="180" height="180" rx="38" fill="url(#bg)"/>
+  <!-- Wallet -->
+  <rect x="26" y="56" width="128" height="84" rx="14" fill="url(#card)"/>
+  <rect x="26" y="56" width="128" height="18" rx="14" fill="rgba(255,255,255,0.5)"/>
+  <rect x="26" y="70" width="128" height="14" fill="rgba(99,102,241,0.15)"/>
+  <!-- Pocket -->
+  <rect x="100" y="88" width="42" height="34" rx="8" fill="rgba(99,102,241,0.15)" stroke="rgba(99,102,241,0.3)" stroke-width="1.5"/>
+  <!-- Coin -->
+  <circle cx="121" cy="105" r="11" fill="url(#bg)"/>
+  <rect x="117" y="98" width="3" height="14" rx="1.5" fill="white"/>
+  <rect x="123" y="98" width="3" height="14" rx="1.5" fill="white"/>
+  <rect x="115" y="101" width="10" height="3" rx="1.5" fill="white"/>
+  <path d="M118 108 Q118 115 123 115 Q127 115 127 111" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Lines -->
+  <rect x="38" y="96" width="36" height="5" rx="2.5" fill="rgba(99,102,241,0.35)"/>
+  <rect x="38" y="107" width="26" height="5" rx="2.5" fill="rgba(99,102,241,0.22)"/>
+  <rect x="38" y="118" width="30" height="5" rx="2.5" fill="rgba(99,102,241,0.22)"/>
+  <!-- Trend arrow -->
+  <polyline points="110,44 122,32 134,38 146,24" stroke="rgba(255,255,255,0.7)" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <polygon points="146,24 140,32 150,32" fill="rgba(255,255,255,0.7)"/>
 </svg>
