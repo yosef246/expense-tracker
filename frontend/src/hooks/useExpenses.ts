@@ -8,9 +8,7 @@ export function useExpenses() {
   const addExpense = useCallback((amount: number, description: string, date: string) => {
     const expense: Expense = {
       id: `${Date.now()}-${Math.random().toString(36).slice(2)}`,
-      amount,
-      description,
-      date,
+      amount, description, date,
       createdAt: new Date().toISOString(),
     };
     setExpenses(storage.addExpense(expense));
@@ -20,5 +18,9 @@ export function useExpenses() {
     setExpenses(storage.deleteExpense(id));
   }, []);
 
-  return { expenses, addExpense, deleteExpense };
+  const editExpense = useCallback((id: string, changes: { amount?: number; description?: string; date?: string }) => {
+    setExpenses(storage.editExpense(id, changes));
+  }, []);
+
+  return { expenses, addExpense, deleteExpense, editExpense };
 }

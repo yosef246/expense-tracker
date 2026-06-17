@@ -28,3 +28,9 @@ export function deleteExpense(id: string): Expense[] {
   saveExpenses(updated);
   return updated;
 }
+
+export function editExpense(id: string, changes: Partial<Pick<Expense,'amount'|'description'|'date'>>): Expense[] {
+  const updated = loadExpenses().map(e => e.id === id ? { ...e, ...changes } : e);
+  saveExpenses(updated);
+  return updated;
+}
