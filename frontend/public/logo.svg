@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#8b5cf6"/>
+    </linearGradient>
+    <linearGradient id="shine" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.22)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </linearGradient>
+  </defs>
+  <!-- Rounded square background -->
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <rect width="512" height="512" rx="112" fill="url(#shine)"/>
+  <!-- ₪ symbol -->
+  <!-- Left vertical bar -->
+  <rect x="162" y="118" width="38" height="276" rx="19" fill="white"/>
+  <!-- Right vertical bar -->
+  <rect x="312" y="118" width="38" height="276" rx="19" fill="white"/>
+  <!-- Top horizontal bar -->
+  <rect x="146" y="150" width="220" height="36" rx="18" fill="white"/>
+  <!-- Bottom hook (the distinctive ₪ curve) -->
+  <path d="M 200 318 Q 200 408 308 408 Q 382 408 382 344"
+        stroke="white" stroke-width="38" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

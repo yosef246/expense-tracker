@@ -1,0 +1,14 @@
+{
+  "name": "expense-tracker-tests",
+  "version": "1.0.0",
+  "description": "Plain TypeScript integration tests for the expense tracker app",
+  "scripts": {
+    "test": "npx ts-node formatCurrency.test.ts && npx ts-node budgetPeriod.test.ts"
+  },
+  "devDependencies": {
+    "typescript": "^5.3.0",
+    "ts-node": "^10.9.2",
+    "@types/node": "^20.0.0"
+  },
+  "private": true
+}
