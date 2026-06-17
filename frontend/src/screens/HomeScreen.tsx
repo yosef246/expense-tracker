@@ -8,10 +8,21 @@ import { getBudgetPeriod, toYMD } from '../utils/getBudgetPeriod';
 import { formatExpenseDate } from '../utils/dateHelpers';
 import { Expense } from '../types';
 
+function getBudgetMessage(pct: number, name: string): { emoji: string; text: string; bg: string; color: string } {
+  const n = name.split(' ')[0];
+  if (pct >= 100) return { emoji: '🐘', text: `${n}, יש לך מילה של אטילופה... עברת את התקציב לגמרי!`, bg: '#fef2f2', color: '#dc2626' };
+  if (pct >= 90)  return { emoji: '🚨', text: `${n}! אתה על הקצה — כמעט אפס בחשבון!`, bg: '#fff7ed', color: '#ea580c' };
+  if (pct >= 75)  return { emoji: '😬', text: `${n}, אתה לקראת הסוף — מה נהיה כפרע?`, bg: '#fffbeb', color: '#d97706' };
+  if (pct >= 50)  return { emoji: '👀', text: `${n}, אתה בסדר אבל מעכשיו תשים לב על מה אתה מוציא`, bg: '#fefce8', color: '#ca8a04' };
+  if (pct >= 30)  return { emoji: '👍', text: `${n}, אתה שולט היטב בהוצאות — כך ממשיכים!`, bg: '#f0fdf4', color: '#16a34a' };
+  return              { emoji: '🌟', text: `${n}, מעולה! אתה בשליטה מלאה על התקציב`, bg: '#f0fdf4', color: '#059669' };
+}
+
 export default function HomeScreen() {
   const navigate = useNavigate();
   const { expenses, deleteExpense } = useExpenses();
   const { settings } = useSettings();
+  const userName = localStorage.getItem('userName') || 'משתמש';
 
   const period = getBudgetPeriod(settings.monthStartDay, new Date());
   const startStr = toYMD(period.start);
@@ -24,6 +35,7 @@ export default function HomeScreen() {
   const barColor       = getProgressColor(pct);
   const barWidth       = Math.min(pct, 100);
   const recent         = expenses.slice(0, 5);
+  const msg            = getBudgetMessage(pct, userName);
 
   const handleDelete = (id: string) => {
     if (window.confirm('למחוק את ההוצאה?')) deleteExpense(id);
@@ -44,6 +56,7 @@ export default function HomeScreen() {
           </div>
         </div>
 
+        <p style={s.greeting}>שלום, {userName.split(' ')[0]} 👋</p>
         <p style={s.periodTag}>💰 תקציב {period.label}</p>
         <div style={s.heroAmount}>{formatCurrency(settings.monthlyBudget)}</div>
 
@@ -74,6 +87,13 @@ export default function HomeScreen() {
 
       {/* ── Body ── */}
       <div style={s.body}>
+
+        {/* Budget message */}
+        <div style={{ ...s.msgCard, background: msg.bg, borderColor: msg.color + '33' }}>
+          <span style={s.msgEmoji}>{msg.emoji}</span>
+          <span style={{ ...s.msgText, color: msg.color }}>{msg.text}</span>
+        </div>
+
         <div style={s.sectionRow}>
           <span style={s.sectionTitle}>📅 הוצאות אחרונות</span>
           <button style={s.linkBtn} onClick={() => navigate('/history')}>כל ההיסטוריה ›</button>
@@ -132,7 +152,8 @@ const s: Record<string,React.CSSProperties> = {
   logo:    { width:30, height:30, borderRadius:8, boxShadow:'0 2px 8px rgba(0,0,0,0.2)' },
   appTitle:{ fontSize:15, fontWeight:'700', color:'white' },
 
-  periodTag:  { fontSize:13, color:'rgba(255,255,255,0.75)', marginBottom:6, position:'relative', zIndex:1 },
+  greeting:   { fontSize:15, fontWeight:'700', color:'rgba(255,255,255,0.9)', marginBottom:2, position:'relative', zIndex:1 },
+  periodTag:  { fontSize:13, color:'rgba(255,255,255,0.65)', marginBottom:6, position:'relative', zIndex:1 },
   heroAmount: { fontSize:46, fontWeight:'800', color:'white', textAlign:'center', marginBottom:18, direction:'ltr' as const, position:'relative', zIndex:1, letterSpacing:-1, textShadow:'0 2px 16px rgba(0,0,0,0.15)' },
 
   track: { height:12, borderRadius:8, background:'rgba(255,255,255,0.25)', overflow:'hidden', marginBottom:16, position:'relative', zIndex:1 },
@@ -158,6 +179,10 @@ const s: Record<string,React.CSSProperties> = {
   expRight: { display:'flex', alignItems:'center', gap:10 },
   expAmt:   { fontSize:15, fontWeight:'800', color:'#6366f1', direction:'ltr' as const, whiteSpace:'nowrap' },
   delBtn:   { background:'none', border:'none', cursor:'pointer', fontSize:15, padding:4, opacity:0.45 },
+
+  msgCard:  { display:'flex', alignItems:'flex-start', gap:10, borderRadius:14, padding:'12px 14px', marginBottom:18, border:'1.5px solid', boxShadow:'0 2px 8px rgba(0,0,0,0.04)' },
+  msgEmoji: { fontSize:22, flexShrink:0, marginTop:1 },
+  msgText:  { fontSize:14, fontWeight:'600', lineHeight:'1.5', flex:1, textAlign:'right' },
 
   histBtn: { width:'100%', padding:14, marginTop:18, border:'2px solid #6366f1', borderRadius:14, background:'white', color:'#6366f1', fontSize:15, fontWeight:'700', cursor:'pointer' },
 
