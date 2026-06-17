@@ -11,12 +11,12 @@ import { Expense } from '../types';
 /* ─── friendly budget message ─── */
 function getBudgetMsg(pct: number, name: string) {
   const n = name.split(' ')[0];
-  if (pct >= 100) return { emoji: '🐘', text: `${n}, יש לך מילה של אנטילופה... עברת את התקציב לגמרי!`, bg: '#fef2f2', color: '#dc2626' };
-  if (pct >= 90)  return { emoji: '🚨', text: `${n}! אתה על הקצה — כמעט אפס בחשבון!`,                   bg: '#fff7ed', color: '#ea580c' };
-  if (pct >= 75)  return { emoji: '😬', text: `${n}, אתה לקראת הסוף — מה נהיה כפרע?`,                    bg: '#fffbeb', color: '#d97706' };
-  if (pct >= 50)  return { emoji: '👀', text: `${n}, אתה בסדר אבל מעכשיו תשים לב על מה אתה מוציא`,       bg: '#fefce8', color: '#ca8a04' };
-  if (pct >= 30)  return { emoji: '👍', text: `${n}, אתה שולט היטב בהוצאות — כך ממשיכים!`,               bg: '#f0fdf4', color: '#16a34a' };
-  return               { emoji: '🌟', text: `${n}, מעולה! אתה בשליטה מלאה על התקציב`,                    bg: '#f0fdf4', color: '#059669' };
+  if (pct >= 100) return { emoji: '🐘', text: `${n}, יש לך מילה של אנטילופה... עבר/ת את התקציב לגמרי!`,         bg: '#fef2f2', color: '#dc2626' };
+  if (pct >= 90)  return { emoji: '🚨', text: `${n}! את/ה על הקצה — כמעט אפס בחשבון!`,                          bg: '#fff7ed', color: '#ea580c' };
+  if (pct >= 75)  return { emoji: '😬', text: `${n}, את/ה לקראת הסוף — מה יהיה כפרע?`,                          bg: '#fffbeb', color: '#d97706' };
+  if (pct >= 50)  return { emoji: '👀', text: `${n}, את/ה בסדר אבל מעכשיו תשים/י לב על מה את/ה מוצי/א כסף`,    bg: '#fefce8', color: '#ca8a04' };
+  if (pct >= 30)  return { emoji: '👍', text: `${n}, את/ה שולט/ת היטב בהוצאות — כך ממשיכים!`,                   bg: '#f0fdf4', color: '#16a34a' };
+  return               { emoji: '🌟', text: `${n}, מעולה! את/ה בשליטה מלאה על התקציב`,                          bg: '#f0fdf4', color: '#059669' };
 }
 
 /* ─── edit modal ─── */
