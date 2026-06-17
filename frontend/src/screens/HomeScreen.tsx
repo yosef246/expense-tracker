@@ -22,18 +22,17 @@ function getBudgetMsg(pct: number, name: string) {
 /* ─── edit modal ─── */
 function EditModal({ expense, onSave, onClose }: {
   expense: Expense;
-  onSave: (id: string, changes: { amount: number; description: string; date: string }) => void;
+  onSave: (id: string, changes: { amount: number; description: string }) => void;
   onClose: () => void;
 }) {
   const [amount, setAmount] = useState(String(expense.amount));
   const [desc,   setDesc]   = useState(expense.description);
-  const [date,   setDate]   = useState(expense.date);
   const [warn,   setWarn]   = useState('');
 
   const handleSave = () => {
     const num = parseFloat(amount);
     if (!amount || isNaN(num) || num <= 0) { setWarn('יש להזין סכום גדול מאפס'); return; }
-    onSave(expense.id, { amount: num, description: desc.trim(), date });
+    onSave(expense.id, { amount: num, description: desc.trim() });
     onClose();
   };
 
@@ -48,13 +47,9 @@ function EditModal({ expense, onSave, onClose }: {
           onChange={e => { setAmount(e.target.value); setWarn(''); }} />
         {warn && <p style={m.err}>{warn}</p>}
 
-        <label style={m.lbl}>תיאור</label>
+        <label style={m.lbl}>מאיפה קנית? 🛍️</label>
         <input style={m.inp} type="text" value={desc}
           onChange={e => setDesc(e.target.value)} maxLength={200} />
-
-        <label style={m.lbl}>תאריך</label>
-        <input style={m.inp} type="date" value={date}
-          onChange={e => setDate(e.target.value)} />
 
         <div style={m.btns}>
           <button style={m.cancel} onClick={onClose}>ביטול</button>
@@ -218,7 +213,7 @@ export default function HomeScreen() {
       {editing && (
         <EditModal
           expense={editing}
-          onSave={(id, changes) => editExpense(id, changes)}
+          onSave={(id, changes) => editExpense(id, { ...changes, date: editing.date })}
           onClose={() => setEditing(null)}
         />
       )}
