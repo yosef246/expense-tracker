@@ -2,21 +2,24 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useExpenses } from '../hooks/useExpenses';
 import { dateToYMD } from '../utils/dateHelpers';
+import { CATEGORIES } from '../utils/categories';
+import { ExpenseCategory } from '../types';
 
 export default function AddExpenseScreen() {
   const navigate = useNavigate();
   const { addExpense } = useExpenses();
 
-  const [amount,  setAmount]  = useState('');
-  const [description, setDesc] = useState('');
-  const [warning, setWarning] = useState('');
-  const [saving,  setSaving]  = useState(false);
+  const [amount,   setAmount]   = useState('');
+  const [description, setDesc]  = useState('');
+  const [category, setCategory] = useState<ExpenseCategory>('other');
+  const [warning,  setWarning]  = useState('');
+  const [saving,   setSaving]   = useState(false);
 
   const handleSave = () => {
     const num = parseFloat(amount);
     if (!amount || isNaN(num) || num <= 0) { setWarning('יש להזין סכום גדול מאפס'); return; }
     setSaving(true);
-    addExpense(num, description.trim(), dateToYMD(new Date()));
+    addExpense(num, description.trim(), dateToYMD(new Date()), category);
     setTimeout(() => navigate('/'), 300);
   };
 
@@ -33,6 +36,30 @@ export default function AddExpenseScreen() {
       </div>
 
       <div style={s.body}>
+        {/* Category buttons */}
+        <div style={s.catGrid}>
+          {CATEGORIES.map(cat => {
+            const active = category === cat.id;
+            return (
+              <button
+                key={cat.id}
+                style={{
+                  ...s.catBtn,
+                  background: active ? cat.color : 'white',
+                  borderColor: active ? cat.color : '#e2e8f0',
+                  color: active ? 'white' : '#64748b',
+                  boxShadow: active ? `0 4px 14px ${cat.color}55` : '0 2px 8px rgba(0,0,0,0.05)',
+                  transform: active ? 'scale(1.06)' : 'scale(1)',
+                }}
+                onClick={() => setCategory(cat.id)}
+              >
+                <span style={s.catEmoji}>{cat.emoji}</span>
+                <span style={s.catLabel}>{cat.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
         {/* Amount card */}
         <div style={s.amountCard}>
           <p style={s.amountHint}>כמה הוצאת?</p>
@@ -70,7 +97,11 @@ export default function AddExpenseScreen() {
           <span style={s.dateText}>נרשם לתאריך היום — {displayDate}</span>
         </div>
 
-        <button style={{ ...s.saveBtn, opacity: saving ? 0.75 : 1 }} onClick={handleSave} disabled={saving}>
+        <button
+          style={{ ...s.saveBtn, opacity: saving ? 0.75 : 1 }}
+          onClick={handleSave}
+          disabled={saving}
+        >
           {saving ? '...שומר' : '💾 שמור הוצאה'}
         </button>
       </div>
@@ -89,6 +120,11 @@ const s: Record<string, React.CSSProperties> = {
   sub:    { fontSize: 14, color: 'rgba(255,255,255,0.65)', position: 'relative', zIndex: 1 },
 
   body:  { padding: '24px 20px 60px' },
+
+  catGrid: { display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 8, marginBottom: 20 },
+  catBtn:  { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '10px 4px', borderRadius: 14, border: '2px solid', cursor: 'pointer', transition: 'all 0.18s ease', fontFamily: 'inherit' },
+  catEmoji:{ fontSize: 22 },
+  catLabel:{ fontSize: 11, fontWeight: '700' },
 
   amountCard:  { background: 'white', borderRadius: 20, padding: '24px 20px 20px', marginBottom: 20, boxShadow: '0 4px 24px rgba(99,102,241,0.12)', border: '2px solid rgba(99,102,241,0.1)', textAlign: 'center' },
   amountHint:  { fontSize: 13, color: '#94a3b8', marginBottom: 10, fontWeight: '600' },
