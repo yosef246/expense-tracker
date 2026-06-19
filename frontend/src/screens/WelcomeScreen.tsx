@@ -34,7 +34,7 @@ export default function WelcomeScreen() {
 
         {/* Title */}
         <h1 style={s.title}>מעקב הוצאות</h1>
-        <p style={s.tagline}>שלוט בכסף שלך — לפני שהוא שולט בך 💸</p>
+        <p style={s.tagline}>שלוט/י בכסף שלך — לפני שהוא שולט בך 💸</p>
 
         {/* Features */}
         <div style={s.features}>
@@ -58,7 +58,7 @@ export default function WelcomeScreen() {
         <input
           style={{ ...s.input, borderColor: touched && !name.trim() ? '#ef4444' : '#e2e8f0' }}
           type="text"
-          placeholder="הכנס את שמך..."
+          placeholder="הכנס/י את שמך..."
           value={name}
           onChange={e => { setName(e.target.value); setTouched(false); }}
           onKeyDown={handleKey}

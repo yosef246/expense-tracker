@@ -32,7 +32,7 @@ export default function AddExpenseScreen() {
         <div style={s.blob} />
         <button style={s.backBtn} onClick={() => navigate(-1)}>← חזרה</button>
         <h1 style={s.title}>הוצאה חדשה ✨</h1>
-        <p style={s.sub}>הוסף הוצאה למעקב החודשי שלך</p>
+        <p style={s.sub}>הוסף/י הוצאה למעקב החודשי שלך</p>
       </div>
 
       <div style={s.body}>
