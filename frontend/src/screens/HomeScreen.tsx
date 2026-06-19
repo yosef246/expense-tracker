@@ -12,7 +12,7 @@ import { Expense, Settings } from '../types';
 /* ─── budget message ─── */
 function getBudgetMsg(pct: number, name: string) {
   const n = name.split(' ')[0];
-  if (pct > 100)  return { emoji: '🐘', text: `${n}, יש לך מילה של אנטילופה... עבר/ת את התקציב לגמרי!`,                                        bg: '#fef2f2', color: '#dc2626' };
+  if (pct > 100)  return { emoji: '🐘', text: `${n}, יש לך מילה של אנטילופה... עברת את התקציב לגמרי!`,                                        bg: '#fef2f2', color: '#dc2626' };
   if (pct >= 100) return { emoji: '🎯', text: `${n}, את/ה הגעת למכסה שהצבת לעצמך/לעצמיך — מכאן והלאה זה את/ה מול המילה שלך`,                  bg: '#fef2f2', color: '#dc2626' };
   if (pct >= 90)  return { emoji: '🚨', text: `${n}! את/ה על הקצה — כמעט אפס בחשבון!`,                                                           bg: '#fff7ed', color: '#ea580c' };
   if (pct >= 75)  return { emoji: '😬', text: `${n}, את/ה לקראת הסוף — מה יהיה כפרע?`,                                                           bg: '#fffbeb', color: '#d97706' };
