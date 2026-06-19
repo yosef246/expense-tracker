@@ -1,25 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSettings } from '../hooks/useSettings';
-import {
-  loadNotifSettings, saveNotifSettings,
-  requestPermission, scheduleDaily, cancelScheduled,
-} from '../utils/notifications';
 
 export default function SettingsScreen() {
   const navigate = useNavigate();
   const { settings, saveSettings } = useSettings();
 
   const [budget,   setBudget]  = useState(String(settings.monthlyBudget));
-  const [startDay, setStart]   = useState<1 | 15>(settings.monthStartDay);
+  const [startDay, setStart]   = useState<1 | 10>(settings.monthStartDay);
   const [warning,  setWarning] = useState('');
   const [saved,    setSaved]   = useState(false);
-
-  const notifInit = loadNotifSettings();
-  const [notifEnabled, setNotifEnabled] = useState(notifInit.enabled);
-  const [notifHour,    setNotifHour]    = useState(String(notifInit.hour).padStart(2, '0'));
-  const [notifMin,     setNotifMin]     = useState(String(notifInit.minute).padStart(2, '0'));
-  const [notifStatus,  setNotifStatus]  = useState('');
 
   const handleSave = () => {
     const raw = budget.trim();
@@ -30,35 +20,6 @@ export default function SettingsScreen() {
     saveSettings({ monthlyBudget: n, monthStartDay: startDay });
     setSaved(true);
     setTimeout(() => { setSaved(false); navigate('/'); }, 900);
-  };
-
-  const handleNotifToggle = async () => {
-    if (!notifEnabled) {
-      const granted = await requestPermission();
-      if (!granted) { setNotifStatus('לא ניתנה הרשאת התראות'); return; }
-      const h = parseInt(notifHour, 10);
-      const min = parseInt(notifMin, 10);
-      saveNotifSettings({ enabled: true, hour: h, minute: min });
-      scheduleDaily(h, min);
-      setNotifEnabled(true);
-      setNotifStatus('✅ תזכורת פעילה');
-    } else {
-      cancelScheduled();
-      saveNotifSettings({ enabled: false, hour: parseInt(notifHour, 10), minute: parseInt(notifMin, 10) });
-      setNotifEnabled(false);
-      setNotifStatus('');
-    }
-  };
-
-  const handleTimeChange = (h: string, min: string) => {
-    setNotifHour(h);
-    setNotifMin(min);
-    if (notifEnabled) {
-      const hh = parseInt(h, 10);
-      const mm = parseInt(min, 10);
-      saveNotifSettings({ enabled: true, hour: hh, minute: mm });
-      scheduleDaily(hh, mm);
-    }
   };
 
   return (
@@ -95,7 +56,7 @@ export default function SettingsScreen() {
           <div style={s.cardBody}>
             <div style={s.cardLabel}>יום תחילת החודש התקציבי</div>
             <div style={s.seg}>
-              {([1, 15] as const).map(d => (
+              {([1, 10] as const).map(d => (
                 <button
                   key={d}
                   style={{ ...s.segBtn, ...(startDay === d ? s.segOn : {}) }}
@@ -105,48 +66,6 @@ export default function SettingsScreen() {
                 </button>
               ))}
             </div>
-          </div>
-        </div>
-
-        {/* Notifications */}
-        <div style={s.card}>
-          <div style={s.cardIcon}>🔔</div>
-          <div style={s.cardBody}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-              <div style={s.cardLabel}>תזכורת יומית</div>
-              <button
-                style={{ ...s.toggle, background: notifEnabled ? '#6366f1' : '#e2e8f0' }}
-                onClick={handleNotifToggle}
-              >
-                <div style={{ ...s.toggleThumb, transform: notifEnabled ? 'translateX(-20px)' : 'translateX(0)' }} />
-              </button>
-            </div>
-            <div style={s.timeRow}>
-              <label style={{ fontSize: 12, color: '#64748b', fontWeight: '600' }}>שעת תזכורת</label>
-              <div style={s.timeInputs}>
-                <select
-                  style={s.sel}
-                  value={notifHour}
-                  onChange={e => handleTimeChange(e.target.value, notifMin)}
-                >
-                  {Array.from({ length: 24 }, (_, i) => String(i).padStart(2, '0')).map(h => (
-                    <option key={h} value={h}>{h}</option>
-                  ))}
-                </select>
-                <span style={{ color: '#64748b', fontWeight: '700' }}>:</span>
-                <select
-                  style={s.sel}
-                  value={notifMin}
-                  onChange={e => handleTimeChange(notifHour, e.target.value)}
-                >
-                  {['00', '15', '30', '45'].map(m => (
-                    <option key={m} value={m}>{m}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            {notifStatus && <p style={{ fontSize: 12, color: notifStatus.startsWith('✅') ? '#059669' : '#ef4444', marginTop: 8 }}>{notifStatus}</p>}
-            <p style={s.notifNote}>⚠️ ההתראות עובדות רק כשהדפדפן פתוח</p>
           </div>
         </div>
 
@@ -184,15 +103,6 @@ const s: Record<string, React.CSSProperties> = {
   seg:    { display: 'flex', gap: 10 },
   segBtn: { flex: 1, padding: '12px 0', borderRadius: 12, border: '2px solid #e2e8f0', background: '#f8f9ff', color: '#94a3b8', fontSize: 15, fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s' },
   segOn:  { background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', color: 'white', border: '2px solid transparent', fontWeight: '800' },
-
-  toggle:      { width: 44, height: 24, borderRadius: 12, border: 'none', cursor: 'pointer', position: 'relative', transition: 'background 0.25s', flexShrink: 0, padding: 0 },
-  toggleThumb: { position: 'absolute', top: 3, right: 3, width: 18, height: 18, borderRadius: '50%', background: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.2)', transition: 'transform 0.25s' },
-
-  timeRow:    { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 4 },
-  timeInputs: { display: 'flex', alignItems: 'center', gap: 6 },
-  sel:        { padding: '6px 10px', borderRadius: 8, border: '2px solid #e2e8f0', fontSize: 15, fontWeight: '700', background: '#f8f9ff', color: '#1e293b', outline: 'none', cursor: 'pointer' },
-
-  notifNote: { fontSize: 11, color: '#94a3b8', marginTop: 8 },
 
   saveBtn: { width: '100%', padding: 16, marginTop: 24, color: 'white', border: 'none', borderRadius: 14, fontSize: 17, fontWeight: '700', cursor: 'pointer', boxShadow: '0 4px 20px rgba(99,102,241,0.35)', transition: 'background 0.4s', letterSpacing: 0.3 },
 };

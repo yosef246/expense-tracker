@@ -11,7 +11,7 @@ export interface Expense {
 
 export interface Settings {
   monthlyBudget: number;
-  monthStartDay: 1 | 15;
+  monthStartDay: 1 | 10;
 }
 
 export interface BudgetPeriod {

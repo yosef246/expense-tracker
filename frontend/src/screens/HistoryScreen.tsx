@@ -83,7 +83,7 @@ export default function HistoryScreen() {
   const [viewYear,  setYear]  = useState(now.getFullYear());
   const [viewMonth, setMonth] = useState(now.getMonth());
 
-  const viewDate = new Date(viewYear, viewMonth, settings.monthStartDay === 15 ? 15 : 1);
+  const viewDate = new Date(viewYear, viewMonth, settings.monthStartDay === 10 ? 10 : 1);
   const period   = getBudgetPeriod(settings.monthStartDay, viewDate);
   const startStr = toYMD(period.start);
   const endStr   = toYMD(period.end);
