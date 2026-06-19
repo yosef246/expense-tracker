@@ -5,7 +5,10 @@ const DEFAULTS: Settings = { monthlyBudget: 2000, monthStartDay: 1 };
 
 export function loadSettings(): Settings {
   try {
-    return { ...DEFAULTS, ...JSON.parse(localStorage.getItem(KEY) || '{}') };
+    const raw = { ...DEFAULTS, ...JSON.parse(localStorage.getItem(KEY) || '{}') };
+    // Migrate old value 15 → 10
+    if (raw.monthStartDay !== 1 && raw.monthStartDay !== 10) raw.monthStartDay = 10;
+    return raw;
   } catch {
     return { ...DEFAULTS };
   }
