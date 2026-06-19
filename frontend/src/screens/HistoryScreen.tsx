@@ -19,8 +19,42 @@ function PieChart({ expenses }: { expenses: Expense[] }) {
     .filter(c => c.amount > 0);
 
   const cx = 90, cy = 90, r = 70, inner = 44;
-  let angle = -Math.PI / 2;
 
+  const centerLabel = (
+    <>
+      <text x={cx} y={cy - 6} textAnchor="middle" fontSize="11" fill="#64748b" fontWeight="600">סה״כ</text>
+      <text x={cx} y={cy + 10} textAnchor="middle" fontSize="12" fill="#1e293b" fontWeight="800">
+        {formatCurrency(total).replace(' ₪', '')}₪
+      </text>
+    </>
+  );
+
+  // Single segment: SVG arc from point to itself is undefined — use circle instead
+  if (segments.length === 1) {
+    const seg = segments[0];
+    return (
+      <div style={p.wrap}>
+        <div style={p.title}>🥧 פילוח קטגוריות</div>
+        <div style={p.inner}>
+          <svg width={180} height={180} viewBox="0 0 180 180">
+            <circle cx={cx} cy={cy} r={r} fill={seg.color} />
+            <circle cx={cx} cy={cy} r={inner} fill="white" />
+            {centerLabel}
+          </svg>
+          <div style={p.legend}>
+            <div style={p.legendRow}>
+              <div style={{ width: 10, height: 10, borderRadius: 3, background: seg.color, flexShrink: 0 }} />
+              <span style={p.legendLabel}>{seg.emoji} {seg.label}</span>
+              <span style={{ ...p.legendAmt, color: seg.color }}>{formatCurrency(seg.amount)}</span>
+              <span style={p.legendPct}>100%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  let angle = -Math.PI / 2;
   const arcs = segments.map(seg => {
     const frac = seg.amount / total;
     const a0 = angle;
@@ -41,10 +75,7 @@ function PieChart({ expenses }: { expenses: Expense[] }) {
         <svg width={180} height={180} viewBox="0 0 180 180">
           {arcs.map((a, i) => <path key={i} d={a.d} fill={a.color} />)}
           <circle cx={cx} cy={cy} r={inner} fill="white" />
-          <text x={cx} y={cy - 6} textAnchor="middle" fontSize="11" fill="#64748b" fontWeight="600">סה״כ</text>
-          <text x={cx} y={cy + 10} textAnchor="middle" fontSize="12" fill="#1e293b" fontWeight="800">
-            {formatCurrency(total).replace('₪', '')}₪
-          </text>
+          {centerLabel}
         </svg>
 
         <div style={p.legend}>

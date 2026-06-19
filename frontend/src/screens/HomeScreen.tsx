@@ -6,8 +6,8 @@ import { formatCurrency } from '../utils/formatCurrency';
 import { getProgressColor } from '../utils/getProgressColor';
 import { getBudgetPeriod, toYMD } from '../utils/getBudgetPeriod';
 import { formatExpenseDate, dateToYMD } from '../utils/dateHelpers';
-import { CATEGORIES, getCategoryEmoji, getCategoryColor } from '../utils/categories';
-import { Expense, ExpenseCategory, Settings } from '../types';
+import { CATEGORIES, getCategoryEmoji } from '../utils/categories';
+import { Expense, Settings } from '../types';
 
 /* ─── budget message ─── */
 function getBudgetMsg(pct: number, name: string) {
@@ -175,7 +175,7 @@ function SwipeRow({ expense, onDelete, onEdit, index }: {
   };
   const reset = () => setOffsetX(0);
 
-  const catColor = getCategoryEmoji(expense.category);
+  const catEmoji = getCategoryEmoji(expense.category);
 
   return (
     <div className="card-enter" style={{ ...r.wrap, animationDelay: `${index * 55}ms` }}>
@@ -183,7 +183,7 @@ function SwipeRow({ expense, onDelete, onEdit, index }: {
       <button style={r.delBg}  onClick={() => { reset(); if (window.confirm('למחוק את ההוצאה?')) onDelete(expense.id); }}>🗑️ מחיקה</button>
 
       <div
-        style={{ ...r.card, transform: `translateX(${offsetX}px)`, transition: dragging ? 'none' : 'transform 0.28s cubic-bezier(.4,0,.2,1)' }}
+        style={{ ...r.card, transform: `translateX(${offsetX}px)`, transition: dragging ? 'none' : 'transform 0.28s cubic-bezier(.4,0,.2,1)', touchAction: 'pan-y' }}
         onMouseDown={e => begin(e.clientX)}
         onMouseMove={e => move(e.clientX)}
         onMouseUp={end}
@@ -192,8 +192,8 @@ function SwipeRow({ expense, onDelete, onEdit, index }: {
         onTouchMove={e => move(e.touches[0].clientX)}
         onTouchEnd={end}
       >
-        <div style={r.catDot} title={expense.category}>
-          <span style={{ fontSize: 18 }}>{catColor}</span>
+        <div style={r.catDot}>
+          <span style={{ fontSize: 18 }}>{catEmoji}</span>
         </div>
         <div style={r.left}>
           <span style={r.date}>{formatExpenseDate(expense.date, expense.createdAt)}</span>
