@@ -262,7 +262,7 @@ export default function HomeScreen() {
           </div>
           <div style={{ ...s.pill, background: 'rgba(255,255,255,0.55)' }}>
             <span style={s.pillLabel}>תקציב</span>
-            <span style={{ ...s.pillVal, color: 'white' }}>{formatCurrency(settings.monthlyBudget)}</span>
+            <span style={{ ...s.pillVal, color: '#10b981' }}>{formatCurrency(settings.monthlyBudget)}</span>
           </div>
           <div style={{ ...s.pill, minWidth: 56 }}>
             <span style={s.pillLabel}>בוצע</span>
