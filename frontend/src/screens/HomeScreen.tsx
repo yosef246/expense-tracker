@@ -247,8 +247,9 @@ export default function HomeScreen() {
         </div>
 
         <p style={s.greeting}>שלום, {userName.split(' ')[0]} 👋</p>
-        <p style={s.periodTag}>💰 תקציב {period.label}</p>
-        <div style={s.heroAmount}>{formatCurrency(settings.monthlyBudget)}</div>
+        <p style={s.periodTag}>📅 {period.label}</p>
+        <p style={s.remainLabel}>נשאר לך</p>
+        <div style={{ ...s.heroAmount, color: barColor }}>{formatCurrency(remaining)}</div>
 
         <div style={s.track}>
           <div style={{ ...s.fill, width: `${barWidth}%`, background: barGrad }} />
@@ -260,11 +261,12 @@ export default function HomeScreen() {
             <span style={{ ...s.pillVal, color: '#ef4444' }}>{formatCurrency(totalSpent)}</span>
           </div>
           <div style={{ ...s.pill, background: 'rgba(255,255,255,0.55)' }}>
-            <span style={s.pillLabel}>נשאר</span>
-            <span style={{ ...s.pillVal, color: remaining >= 0 ? '#059669' : '#ef4444' }}>{formatCurrency(remaining)}</span>
+            <span style={s.pillLabel}>תקציב</span>
+            <span style={{ ...s.pillVal, color: 'white' }}>{formatCurrency(settings.monthlyBudget)}</span>
           </div>
           <div style={{ ...s.pill, minWidth: 56 }}>
-            <span style={{ ...s.pillVal, color: 'white', fontSize: 18 }}>{pct.toFixed(0)}%</span>
+            <span style={s.pillLabel}>בוצע</span>
+            <span style={{ ...s.pillVal, color: barColor, fontSize: 18 }}>{pct.toFixed(0)}%</span>
           </div>
         </div>
       </div>
@@ -341,8 +343,9 @@ const s: Record<string, React.CSSProperties> = {
   logo:       { width: 30, height: 30, borderRadius: 8 },
   appTitle:   { fontSize: 15, fontWeight: '700', color: 'white' },
   greeting:   { fontSize: 15, fontWeight: '700', color: 'rgba(255,255,255,0.9)', marginBottom: 2, position: 'relative', zIndex: 1 },
-  periodTag:  { fontSize: 13, color: 'rgba(255,255,255,0.65)', marginBottom: 6, position: 'relative', zIndex: 1 },
-  heroAmount: { fontSize: 46, fontWeight: '800', color: 'white', textAlign: 'center', marginBottom: 18, direction: 'ltr' as const, position: 'relative', zIndex: 1, letterSpacing: -1 },
+  periodTag:  { fontSize: 13, color: 'rgba(255,255,255,0.65)', marginBottom: 2, position: 'relative', zIndex: 1 },
+  remainLabel:{ fontSize: 12, color: 'rgba(255,255,255,0.55)', textAlign: 'center', marginBottom: 4, position: 'relative', zIndex: 1, letterSpacing: 0.5 },
+  heroAmount: { fontSize: 46, fontWeight: '800', textAlign: 'center', marginBottom: 18, direction: 'ltr' as const, position: 'relative', zIndex: 1, letterSpacing: -1, textShadow: '0 2px 12px rgba(0,0,0,0.18)' },
   track:      { height: 12, borderRadius: 8, background: 'rgba(255,255,255,0.25)', overflow: 'hidden', marginBottom: 16, position: 'relative', zIndex: 1 },
   fill:       { height: '100%', borderRadius: 8, transition: 'width 0.7s cubic-bezier(.4,0,.2,1)' },
   pillRow:    { display: 'flex', gap: 8, position: 'relative', zIndex: 1 },
