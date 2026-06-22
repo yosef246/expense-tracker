@@ -15,17 +15,21 @@ export default function SettingsScreen() {
   const [notifHour,   setNotifHour]  = useState(() => loadNotifSettings().hour);
   const [notifMinute, setNotifMin]   = useState(() => loadNotifSettings().minute);
 
-  const handleToggleNotif = async () => {
+  const handleToggleNotif = () => {
     if (!notifOn) {
-      const granted = await requestPermission();
-      if (!granted) { alert('יש לאפשר הרשאות התראות בדפדפן'); return; }
-      scheduleDaily(notifHour, notifMinute);
+      // Defer outside the click-event timing window so the browser can paint first (fixes INP)
+      setTimeout(async () => {
+        const granted = await requestPermission();
+        if (!granted) { alert('יש לאפשר הרשאות התראות בדפדפן'); return; }
+        scheduleDaily(notifHour, notifMinute);
+        setNotifOn(true);
+        saveNotifSettings({ enabled: true, hour: notifHour, minute: notifMinute });
+      }, 0);
     } else {
       cancelScheduled();
+      setNotifOn(false);
+      saveNotifSettings({ enabled: false, hour: notifHour, minute: notifMinute });
     }
-    const next = !notifOn;
-    setNotifOn(next);
-    saveNotifSettings({ enabled: next, hour: notifHour, minute: notifMinute });
   };
 
   const handleSave = () => {
