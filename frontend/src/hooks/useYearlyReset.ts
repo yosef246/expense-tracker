@@ -20,6 +20,9 @@ export function useYearlyReset() {
     if (currentYear > lastYear) {
       saveExpenses([]);
       localStorage.setItem(KEY, String(currentYear));
+      if ('caches' in window) {
+        caches.keys().then(keys => Promise.all(keys.map(k => caches.delete(k))));
+      }
       return true;
     }
     return false;
