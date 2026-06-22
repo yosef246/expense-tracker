@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useYearlyReset } from '../hooks/useYearlyReset';
 import { useExpenses } from '../hooks/useExpenses';
 import { useSettings } from '../hooks/useSettings';
 import { formatCurrency } from '../utils/formatCurrency';
@@ -209,6 +210,9 @@ function SwipeRow({ expense, onDelete, onEdit, index }: {
 /* ─── main screen ─── */
 export default function HomeScreen() {
   const navigate = useNavigate();
+  // useYearlyReset MUST be called before useExpenses — its lazy initializer clears
+  // localStorage before useExpenses reads from it, ensuring a clean slate on new year.
+  const { showEndOfYearWarning, wasRecentlyReset, currentYear } = useYearlyReset();
   const { expenses, deleteExpense, editExpense } = useExpenses();
   const { settings } = useSettings();
   const userName = localStorage.getItem('userName') || 'משתמש';
@@ -273,6 +277,28 @@ export default function HomeScreen() {
 
       {/* ── Body ── */}
       <div style={s.body}>
+        {/* New-year reset confirmation */}
+        {wasRecentlyReset && (
+          <div style={s.resetBanner}>
+            <span style={{ fontSize: 26 }}>🎉</span>
+            <div style={{ flex: 1 }}>
+              <div style={s.resetTitle}>שנה טובה! ברוך הבא ל-{currentYear}</div>
+              <div style={s.resetSub}>כל ההוצאות אופסו לקראת השנה החדשה. לא ניתן לשחזר את הנתונים הישנים.</div>
+            </div>
+          </div>
+        )}
+
+        {/* End-of-year warning (Dec 20–31) */}
+        {showEndOfYearWarning && (
+          <div style={s.eoyBanner}>
+            <span style={{ fontSize: 22, flexShrink: 0 }}>⚠️</span>
+            <div style={{ flex: 1 }}>
+              <div style={s.eoyTitle}>עוד מעט סוף שנה!</div>
+              <div style={s.eoySub}>ב-1 בינואר {currentYear + 1} המערכת תאפס את כל ההוצאות לקראת השנה החדשה. לא ניתן לשמור את הנתונים.</div>
+            </div>
+          </div>
+        )}
+
         {/* Budget message */}
         <div style={{ ...s.msgCard, background: msg.bg, borderColor: msg.color + '40' }}>
           <span style={s.msgEmoji}>{msg.emoji}</span>
@@ -362,6 +388,12 @@ const s: Record<string, React.CSSProperties> = {
   swipeHint:  { fontSize: 11, color: '#94a3b8', textAlign: 'center', marginBottom: 12, direction: 'ltr' as const },
   empty:      { textAlign: 'center', padding: '36px 20px', borderRadius: 18, background: 'white', marginBottom: 12, boxShadow: '0 2px 12px rgba(99,102,241,0.07)' },
   histBtn:    { width: '100%', padding: 14, marginTop: 18, border: '2px solid #6366f1', borderRadius: 14, background: 'white', color: '#6366f1', fontSize: 15, fontWeight: '700', cursor: 'pointer' },
+  resetBanner:{ display: 'flex', gap: 12, alignItems: 'flex-start', background: '#f0fdf4', border: '1.5px solid #86efac', borderRadius: 14, padding: '14px 16px', marginBottom: 14, direction: 'rtl' as const },
+  resetTitle: { fontSize: 15, fontWeight: '800', color: '#15803d', marginBottom: 4 },
+  resetSub:   { fontSize: 13, color: '#166534', lineHeight: '1.5' },
+  eoyBanner:  { display: 'flex', gap: 12, alignItems: 'flex-start', background: '#fff7ed', border: '1.5px solid #fed7aa', borderRadius: 14, padding: '14px 16px', marginBottom: 14, direction: 'rtl' as const },
+  eoyTitle:   { fontSize: 15, fontWeight: '800', color: '#c2410c', marginBottom: 4 },
+  eoySub:     { fontSize: 13, color: '#9a3412', lineHeight: '1.5' },
   fab:        { position: 'fixed', bottom: 28, right: 'calc(max(0px,(100vw - 480px)/2) + 20px)', width: 58, height: 58, borderRadius: '50%', background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', color: 'white', fontSize: 26, boxShadow: '0 6px 24px rgba(99,102,241,0.5)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' },
 };
 
