@@ -20,23 +20,19 @@ export default function WelcomeScreen() {
 
   return (
     <div style={s.page}>
-      {/* Background blobs */}
       <div style={s.blob1} />
       <div style={s.blob2} />
       <div style={s.blob3} />
 
       <div style={s.card}>
-        {/* Logo */}
         <div style={s.logoWrap}>
           <img src="/logo.svg" alt="לוגו" style={s.logo} />
           <div style={s.logoGlow} />
         </div>
 
-        {/* Title */}
         <h1 style={s.title}>מעקב הוצאות</h1>
         <p style={s.tagline}>שלוט/י בכסף שלך — לפני שהוא שולט בך 💸</p>
 
-        {/* Features */}
         <div style={s.features}>
           {[
             { icon: '📊', text: 'מעקב תקציב חודשי' },
@@ -50,10 +46,8 @@ export default function WelcomeScreen() {
           ))}
         </div>
 
-        {/* Divider */}
         <div style={s.divider} />
 
-        {/* Name input */}
         <p style={s.inputLabel}>מה שמך? 👋</p>
         <input
           style={{ ...s.input, borderColor: touched && !name.trim() ? '#ef4444' : '#e2e8f0' }}

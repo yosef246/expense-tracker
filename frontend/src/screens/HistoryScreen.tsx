@@ -9,7 +9,6 @@ import { formatExpenseDate, getDaysElapsed, getTotalDays, HEBREW_MONTH_NAMES } f
 import { CATEGORIES, getCategoryEmoji } from '../utils/categories';
 import { Expense } from '../types';
 
-/* ─── pie chart ─── */
 function PieChart({ expenses }: { expenses: Expense[] }) {
   const total = expenses.reduce((s, e) => s + e.amount, 0);
   if (total === 0) return null;
@@ -29,7 +28,6 @@ function PieChart({ expenses }: { expenses: Expense[] }) {
     </>
   );
 
-  // Single segment: SVG arc from point to itself is undefined — use circle instead
   if (segments.length === 1) {
     const seg = segments[0];
     return (
@@ -104,7 +102,6 @@ const p: Record<string, React.CSSProperties> = {
   legendPct: { fontSize: 11, color: '#94a3b8', minWidth: 30, textAlign: 'left' },
 };
 
-/* ─── main screen ─── */
 export default function HistoryScreen() {
   const navigate = useNavigate();
   const { expenses, deleteExpense } = useExpenses();
@@ -158,7 +155,6 @@ export default function HistoryScreen() {
       </div>
 
       <div style={s.body}>
-        {/* Summary stats */}
         <div style={s.summCard}>
           <div style={s.summRow}>
             <Stat label="סה״כ הוצאות" value={formatCurrency(totalSpent)} color="#ef4444" />
@@ -172,7 +168,6 @@ export default function HistoryScreen() {
           </div>
         </div>
 
-        {/* Insights */}
         {list.length > 0 && (
           <div style={s.insights}>
             <div style={s.insLine}>💸 הוצאה הגדולה: <b>{biggest?.description || '—'}</b> ({formatCurrency(biggest?.amount ?? 0)})</div>
@@ -180,10 +175,8 @@ export default function HistoryScreen() {
           </div>
         )}
 
-        {/* Pie chart */}
         <PieChart expenses={list} />
 
-        {/* List */}
         <div style={s.secTitle}>כל ההוצאות ({list.length})</div>
         {list.length === 0
           ? <div style={s.empty}><div style={{ fontSize: 40, marginBottom: 8 }}>🗓️</div>אין הוצאות בחודש זה</div>

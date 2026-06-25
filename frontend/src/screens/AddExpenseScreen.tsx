@@ -36,7 +36,6 @@ export default function AddExpenseScreen() {
       </div>
 
       <div style={s.body}>
-        {/* Category buttons */}
         <div style={s.catGrid}>
           {CATEGORIES.map(cat => {
             const active = category === cat.id;
@@ -60,7 +59,6 @@ export default function AddExpenseScreen() {
           })}
         </div>
 
-        {/* Amount card */}
         <div style={s.amountCard}>
           <p style={s.amountHint}>כמה הוצאת?</p>
           <div style={s.amountRow}>
@@ -78,7 +76,6 @@ export default function AddExpenseScreen() {
           {warning && <p style={s.warn}>{warning}</p>}
         </div>
 
-        {/* Description */}
         <div style={s.field}>
           <label style={s.lbl}>על מה? 🛍️</label>
           <input
@@ -91,7 +88,6 @@ export default function AddExpenseScreen() {
           />
         </div>
 
-        {/* Auto date display */}
         <div style={s.dateBadge}>
           <span style={s.dateIcon}>📅</span>
           <span style={s.dateText}>נרשם לתאריך היום — {displayDate}</span>

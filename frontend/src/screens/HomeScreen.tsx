@@ -10,7 +10,6 @@ import { formatExpenseDate, dateToYMD } from '../utils/dateHelpers';
 import { CATEGORIES, getCategoryEmoji } from '../utils/categories';
 import { Expense, Settings } from '../types';
 
-/* ─── budget message ─── */
 function getBudgetMsg(pct: number, name: string) {
   const n = name.split(' ')[0];
   if (pct > 100)  return { emoji: '🐘', text: `${n}, יש לך מילה של אנטילופה... עברת את התקציב לגמרי!`,                                        bg: '#fef2f2', color: '#dc2626' };
@@ -22,7 +21,6 @@ function getBudgetMsg(pct: number, name: string) {
   return               { emoji: '🌟', text: `${n}, מעולה! את/ה בשליטה מלאה על התקציב`,                                                           bg: '#f0fdf4', color: '#059669' };
 }
 
-/* ─── weekly summary ─── */
 function WeeklySummary({ expenses }: { expenses: Expense[] }) {
   const now    = new Date();
   const nowStr = dateToYMD(now);
@@ -72,7 +70,6 @@ const sw: Record<string, React.CSSProperties> = {
   line:  { fontSize: 13, color: '#4338ca', lineHeight: '1.6' },
 };
 
-/* ─── last month comparison ─── */
 function LastMonthRow({ expenses, settings }: { expenses: Expense[]; settings: Settings }) {
   const now    = new Date();
   const period = getBudgetPeriod(settings.monthStartDay, now);
@@ -115,7 +112,6 @@ const lm: Record<string, React.CSSProperties> = {
   text: { fontSize: 13, color: '#475569', lineHeight: '1.5' },
 };
 
-/* ─── edit modal ─── */
 function EditModal({ expense, onSave, onClose }: {
   expense: Expense;
   onSave: (id: string, changes: { amount: number; description: string }) => void;
@@ -170,7 +166,6 @@ function EditModal({ expense, onSave, onClose }: {
   );
 }
 
-/* ─── swipeable row ─── */
 const SWIPE_THRESHOLD = 60;
 
 function SwipeRow({ expense, onDelete, onEdit, index }: {
@@ -221,11 +216,8 @@ function SwipeRow({ expense, onDelete, onEdit, index }: {
   );
 }
 
-/* ─── main screen ─── */
 export default function HomeScreen() {
   const navigate = useNavigate();
-  // useYearlyReset MUST be called before useExpenses — its lazy initializer clears
-  // localStorage before useExpenses reads from it, ensuring a clean slate on new year.
   const { showEndOfYearWarning, wasRecentlyReset, currentYear } = useYearlyReset();
   const { expenses, deleteExpense, editExpense } = useExpenses();
   const { settings } = useSettings();
@@ -252,7 +244,6 @@ export default function HomeScreen() {
 
   return (
     <div style={s.page}>
-      {/* ── Header ── */}
       <div style={s.header}>
         <div style={s.blob1} /><div style={s.blob2} />
 
@@ -289,9 +280,7 @@ export default function HomeScreen() {
         </div>
       </div>
 
-      {/* ── Body ── */}
       <div style={s.body}>
-        {/* New-year reset confirmation */}
         {wasRecentlyReset && (
           <div style={s.resetBanner}>
             <span style={{ fontSize: 26 }}>🎉</span>
@@ -302,7 +291,6 @@ export default function HomeScreen() {
           </div>
         )}
 
-        {/* End-of-year warning (Dec 20–31) */}
         {showEndOfYearWarning && (
           <div style={s.eoyBanner}>
             <span style={{ fontSize: 22, flexShrink: 0 }}>⚠️</span>
@@ -313,16 +301,13 @@ export default function HomeScreen() {
           </div>
         )}
 
-        {/* Budget message */}
         <div style={{ ...s.msgCard, background: msg.bg, borderColor: msg.color + '40' }}>
           <span style={s.msgEmoji}>{msg.emoji}</span>
           <span style={{ ...s.msgText, color: msg.color }}>{msg.text}</span>
         </div>
 
-        {/* Weekly summary */}
         <WeeklySummary expenses={expenses} />
 
-        {/* Last month comparison */}
         <LastMonthRow expenses={expenses} settings={settings} />
 
         <div style={s.sectionRow}>
@@ -344,10 +329,8 @@ export default function HomeScreen() {
         <button style={s.histBtn} onClick={() => navigate('/history')}>📊 היסטוריה חודשית</button>
       </div>
 
-      {/* ── FAB ── */}
       <button style={s.fab} onClick={() => navigate('/add')}>＋</button>
 
-      {/* ── Edit modal ── */}
       {editing && (
         <EditModal
           expense={editing}
@@ -369,7 +352,6 @@ function Empty() {
   );
 }
 
-/* ─── styles ─── */
 const HEADER_BG = 'linear-gradient(150deg,#6366f1 0%,#8b5cf6 45%,#a78bfa 100%)';
 
 const s: Record<string, React.CSSProperties> = {
@@ -384,7 +366,6 @@ const s: Record<string, React.CSSProperties> = {
   appTitle:   { fontSize: 15, fontWeight: '700', color: 'white' },
   greeting:   { fontSize: 15, fontWeight: '700', color: 'rgba(255,255,255,0.9)', marginBottom: 2, position: 'relative', zIndex: 1 },
   todayDate:  { fontSize: 13, color: 'rgba(255,255,255,0.75)', marginBottom: 4, position: 'relative', zIndex: 1 },
-  periodTag:  { fontSize: 13, color: 'rgba(255,255,255,0.65)', marginBottom: 2, position: 'relative', zIndex: 1 },
   remainLabel:{ fontSize: 12, color: 'rgba(255,255,255,0.55)', textAlign: 'center', marginBottom: 4, position: 'relative', zIndex: 1, letterSpacing: 0.5 },
   heroAmount: { fontSize: 46, fontWeight: '800', textAlign: 'center', marginBottom: 18, direction: 'ltr' as const, position: 'relative', zIndex: 1, letterSpacing: -1, textShadow: '0 2px 12px rgba(0,0,0,0.18)' },
   track:      { height: 12, borderRadius: 8, background: 'rgba(255,255,255,0.25)', overflow: 'hidden', marginBottom: 16, position: 'relative', zIndex: 1 },

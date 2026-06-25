@@ -16,18 +16,18 @@ export function useExpenses() {
       amount, description, date, category,
       createdAt: new Date().toISOString(),
     };
-    setExpenses(storage.addExpense(expense));
+    setExpenses(prev => storage.addExpense(prev, expense));
   }, []);
 
   const deleteExpense = useCallback((id: string) => {
-    setExpenses(storage.deleteExpense(id));
+    setExpenses(prev => storage.deleteExpense(prev, id));
   }, []);
 
   const editExpense = useCallback((
     id: string,
     changes: Partial<Pick<Expense, 'amount' | 'description' | 'date' | 'category'>>,
   ) => {
-    setExpenses(storage.editExpense(id, changes));
+    setExpenses(prev => storage.editExpense(prev, id, changes));
   }, []);
 
   return { expenses, addExpense, deleteExpense, editExpense };

@@ -31,8 +31,6 @@ export default function SettingsScreen() {
       </div>
 
       <div style={s.body}>
-
-        {/* Budget */}
         <div style={s.card}>
           <div style={s.cardIcon}>💰</div>
           <div style={s.cardBody}>
@@ -49,7 +47,6 @@ export default function SettingsScreen() {
           </div>
         </div>
 
-        {/* Start day */}
         <div style={s.card}>
           <div style={s.cardIcon}>📅</div>
           <div style={s.cardBody}>

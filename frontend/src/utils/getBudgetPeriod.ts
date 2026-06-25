@@ -1,5 +1,7 @@
 import { BudgetPeriod } from '../types';
-import { HEBREW_MONTH_NAMES } from './dateHelpers';
+import { HEBREW_MONTH_NAMES, dateToYMD } from './dateHelpers';
+
+export { dateToYMD as toYMD };
 
 function localMidnight(year: number, month: number, day: number): Date {
   return new Date(year, month, day, 0, 0, 0, 0);
@@ -19,7 +21,6 @@ export function getBudgetPeriod(
     return { start, end, label: `${HEBREW_MONTH_NAMES[month]} ${year}` };
   }
 
-  // monthStartDay === 10
   if (day >= 10) {
     const start = localMidnight(year, month, 10);
     const end   = localMidnight(year, month + 1, 10);
@@ -29,11 +30,4 @@ export function getBudgetPeriod(
     const end   = localMidnight(year, month, 10);
     return { start, end, label: `${HEBREW_MONTH_NAMES[start.getMonth()]} ${start.getFullYear()}` };
   }
-}
-
-export function toYMD(date: Date): string {
-  const y = date.getFullYear();
-  const m = String(date.getMonth() + 1).padStart(2, '0');
-  const d = String(date.getDate()).padStart(2, '0');
-  return `${y}-${m}-${d}`;
 }

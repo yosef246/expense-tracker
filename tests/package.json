@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Plain TypeScript integration tests for the expense tracker app",
   "scripts": {
-    "test": "npx ts-node formatCurrency.test.ts && npx ts-node budgetPeriod.test.ts"
+    "test": "npx ts-node budgetPeriod.test.ts && npx ts-node pwa-audit.test.ts"
   },
   "devDependencies": {
     "typescript": "^5.3.0",
