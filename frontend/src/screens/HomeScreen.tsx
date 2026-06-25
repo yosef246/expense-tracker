@@ -124,13 +124,22 @@ function EditModal({ expense, onSave, onClose }: {
   const [amount, setAmount] = useState(String(expense.amount));
   const [desc,   setDesc]   = useState(expense.description);
   const [warn,   setWarn]   = useState('');
+  const [saved,  setSaved]  = useState(false);
+
+  const hasChanged = amount !== String(expense.amount) || desc.trim() !== expense.description;
 
   const handleSave = () => {
+    if (!hasChanged) return;
     const num = parseFloat(amount);
     if (!amount || isNaN(num) || num <= 0) { setWarn('יש להזין סכום גדול מאפס'); return; }
     onSave(expense.id, { amount: num, description: desc.trim() });
-    onClose();
+    setSaved(true);
+    setTimeout(onClose, 900);
   };
+
+  const saveBg = saved       ? 'linear-gradient(135deg,#059669,#34d399)'
+               : hasChanged  ? 'linear-gradient(135deg,#6366f1,#8b5cf6)'
+               :               '#e2e8f0';
 
   return (
     <div style={m.overlay} onClick={onClose}>
@@ -149,7 +158,12 @@ function EditModal({ expense, onSave, onClose }: {
 
         <div style={m.btns}>
           <button style={m.cancel} onClick={onClose}>ביטול</button>
-          <button style={m.save}   onClick={handleSave}>💾 שמור</button>
+          <button
+            style={{ ...m.save, background: saveBg, color: hasChanged || saved ? 'white' : '#94a3b8', cursor: hasChanged ? 'pointer' : 'default' }}
+            onClick={handleSave}
+          >
+            {saved ? '✅ נשמר!' : '💾 שמור'}
+          </button>
         </div>
       </div>
     </div>
@@ -251,6 +265,7 @@ export default function HomeScreen() {
         </div>
 
         <p style={s.greeting}>שלום, {userName.split(' ')[0]} 👋</p>
+        <p style={s.todayDate}>{new Date().toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
         <p style={s.periodTag}>📅 {period.label}</p>
         <p style={s.remainLabel}>נשאר לך</p>
         <div style={{ ...s.heroAmount, color: barColor }}>{formatCurrency(remaining)}</div>
@@ -369,6 +384,7 @@ const s: Record<string, React.CSSProperties> = {
   logo:       { width: 30, height: 30, borderRadius: 8 },
   appTitle:   { fontSize: 15, fontWeight: '700', color: 'white' },
   greeting:   { fontSize: 15, fontWeight: '700', color: 'rgba(255,255,255,0.9)', marginBottom: 2, position: 'relative', zIndex: 1 },
+  todayDate:  { fontSize: 13, color: 'rgba(255,255,255,0.75)', marginBottom: 4, position: 'relative', zIndex: 1 },
   periodTag:  { fontSize: 13, color: 'rgba(255,255,255,0.65)', marginBottom: 2, position: 'relative', zIndex: 1 },
   remainLabel:{ fontSize: 12, color: 'rgba(255,255,255,0.55)', textAlign: 'center', marginBottom: 4, position: 'relative', zIndex: 1, letterSpacing: 0.5 },
   heroAmount: { fontSize: 46, fontWeight: '800', textAlign: 'center', marginBottom: 18, direction: 'ltr' as const, position: 'relative', zIndex: 1, letterSpacing: -1, textShadow: '0 2px 12px rgba(0,0,0,0.18)' },

@@ -122,7 +122,7 @@ const s: Record<string, React.CSSProperties> = {
   body:  { padding: '24px 20px 60px' },
 
   catGrid: { display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 8, marginBottom: 20 },
-  catBtn:  { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, padding: '10px 4px', borderRadius: 14, border: '2px solid', cursor: 'pointer', transition: 'all 0.18s ease', fontFamily: 'inherit' },
+  catBtn:  { display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 3, padding: '8px 2px', borderRadius: 12, border: '2px solid', cursor: 'pointer', transition: 'all 0.18s ease', fontFamily: 'inherit' },
   catEmoji:{ fontSize: 22 },
   catLabel:{ fontSize: 11, fontWeight: '700' },
 

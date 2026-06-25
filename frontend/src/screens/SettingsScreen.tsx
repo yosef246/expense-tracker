@@ -1,36 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSettings } from '../hooks/useSettings';
-import { loadNotifSettings, saveNotifSettings, requestPermission, scheduleDaily, cancelScheduled } from '../utils/notifications';
-
 export default function SettingsScreen() {
   const navigate = useNavigate();
   const { settings, saveSettings } = useSettings();
 
-  const [budget,      setBudget]     = useState(String(settings.monthlyBudget));
-  const [startDay,    setStart]      = useState<1 | 10>(settings.monthStartDay);
-  const [warning,     setWarning]    = useState('');
-  const [saved,       setSaved]      = useState(false);
-  const [notifOn,     setNotifOn]    = useState(() => loadNotifSettings().enabled);
-  const [notifHour,   setNotifHour]  = useState(() => loadNotifSettings().hour);
-  const [notifMinute, setNotifMin]   = useState(() => loadNotifSettings().minute);
-
-  const handleToggleNotif = () => {
-    if (!notifOn) {
-      // Defer outside the click-event timing window so the browser can paint first (fixes INP)
-      setTimeout(async () => {
-        const granted = await requestPermission();
-        if (!granted) { alert('יש לאפשר הרשאות התראות בדפדפן'); return; }
-        scheduleDaily(notifHour, notifMinute);
-        setNotifOn(true);
-        saveNotifSettings({ enabled: true, hour: notifHour, minute: notifMinute });
-      }, 0);
-    } else {
-      cancelScheduled();
-      setNotifOn(false);
-      saveNotifSettings({ enabled: false, hour: notifHour, minute: notifMinute });
-    }
-  };
+  const [budget,   setBudget]  = useState(String(settings.monthlyBudget));
+  const [startDay, setStart]   = useState<1 | 10>(settings.monthStartDay);
+  const [warning,  setWarning] = useState('');
+  const [saved,    setSaved]   = useState(false);
 
   const handleSave = () => {
     const raw = budget.trim();
@@ -90,38 +68,6 @@ export default function SettingsScreen() {
           </div>
         </div>
 
-        {/* Notifications */}
-        <div style={s.card}>
-          <div style={s.cardIcon}>🔔</div>
-          <div style={s.cardBody}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: notifOn ? 14 : 0 }}>
-              <div style={s.cardLabel}>תזכורת יומית</div>
-              <button style={{ ...s.toggle, background: notifOn ? 'linear-gradient(135deg,#6366f1,#8b5cf6)' : '#e2e8f0' }} onClick={handleToggleNotif}>
-                <span style={{ ...s.toggleDot, left: notifOn ? 22 : 2 }} />
-              </button>
-            </div>
-            {notifOn && (
-              <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
-                <span style={{ fontSize: 13, color: '#64748b', whiteSpace: 'nowrap' }}>שלח ב-</span>
-                <select
-                  style={{ ...s.inp, padding: '8px 12px', fontSize: 15, flex: 1 }}
-                  value={notifHour}
-                  onChange={e => {
-                    const h = Number(e.target.value);
-                    setNotifHour(h);
-                    saveNotifSettings({ enabled: true, hour: h, minute: notifMinute });
-                    scheduleDaily(h, notifMinute);
-                  }}
-                >
-                  {Array.from({ length: 24 }, (_, i) => (
-                    <option key={i} value={i}>{String(i).padStart(2, '0')}:00</option>
-                  ))}
-                </select>
-              </div>
-            )}
-          </div>
-        </div>
-
         <button
           style={{ ...s.saveBtn, background: saved ? 'linear-gradient(135deg,#059669,#34d399)' : 'linear-gradient(135deg,#6366f1,#8b5cf6)' }}
           onClick={handleSave}
@@ -157,7 +103,5 @@ const s: Record<string, React.CSSProperties> = {
   segBtn: { flex: 1, padding: '12px 0', borderRadius: 12, border: '2px solid #e2e8f0', background: '#f8f9ff', color: '#94a3b8', fontSize: 15, fontWeight: '600', cursor: 'pointer', transition: 'all 0.2s' },
   segOn:  { background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', color: 'white', border: '2px solid transparent', fontWeight: '800' },
 
-  saveBtn:   { width: '100%', padding: 16, marginTop: 24, color: 'white', border: 'none', borderRadius: 14, fontSize: 17, fontWeight: '700', cursor: 'pointer', boxShadow: '0 4px 20px rgba(99,102,241,0.35)', transition: 'background 0.4s', letterSpacing: 0.3 },
-  toggle:    { position: 'relative', width: 44, height: 24, borderRadius: 12, border: 'none', cursor: 'pointer', flexShrink: 0, transition: 'background 0.3s' },
-  toggleDot: { position: 'absolute', top: 2, width: 20, height: 20, borderRadius: '50%', background: 'white', boxShadow: '0 1px 4px rgba(0,0,0,0.25)', transition: 'left 0.3s' } as React.CSSProperties,
+  saveBtn: { width: '100%', padding: 16, marginTop: 24, color: 'white', border: 'none', borderRadius: 14, fontSize: 17, fontWeight: '700', cursor: 'pointer', boxShadow: '0 4px 20px rgba(99,102,241,0.35)', transition: 'background 0.4s', letterSpacing: 0.3 },
 };
