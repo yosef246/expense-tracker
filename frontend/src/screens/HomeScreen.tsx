@@ -266,7 +266,6 @@ export default function HomeScreen() {
 
         <p style={s.greeting}>שלום, {userName.split(' ')[0]} 👋</p>
         <p style={s.todayDate}>{new Date().toLocaleDateString('he-IL', { weekday: 'long', day: 'numeric', month: 'long' })}</p>
-        <p style={s.periodTag}>📅 {period.label}</p>
         <p style={s.remainLabel}>נשאר לך</p>
         <div style={{ ...s.heroAmount, color: barColor }}>{formatCurrency(remaining)}</div>
 
