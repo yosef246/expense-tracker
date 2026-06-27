@@ -108,10 +108,7 @@ export default function HistoryScreen() {
   const { settings } = useSettings();
 
   const now = new Date();
-  const [viewYear,  setYear]  = useState(now.getFullYear());
-  const [viewMonth, setMonth] = useState(now.getMonth());
-
-  const viewDate = new Date(viewYear, viewMonth, settings.monthStartDay === 10 ? 10 : 1);
+  const [viewDate, setViewDate] = useState(new Date());
   const period   = getBudgetPeriod(settings.monthStartDay, viewDate);
   const startStr = toYMD(period.start);
   const endStr   = toYMD(period.end);
@@ -126,8 +123,8 @@ export default function HistoryScreen() {
   const dailyAvg  = days > 0 ? totalSpent / days : 0;
   const biggest   = list.reduce<typeof list[0] | null>((mx, e) => (!mx || e.amount > mx.amount ? e : mx), null);
 
-  const prevM = () => viewMonth === 0  ? (setMonth(11), setYear(y => y - 1)) : setMonth(m => m - 1);
-  const nextM = () => viewMonth === 11 ? (setMonth(0),  setYear(y => y + 1)) : setMonth(m => m + 1);
+  const prevM = () => { const d = new Date(period.start); d.setDate(d.getDate() - 1); setViewDate(d); };
+  const nextM = () => setViewDate(new Date(period.end));
   const onDel = (id: string) => { if (window.confirm('למחוק את ההוצאה?')) deleteExpense(id); };
 
   const barGrad = barColor === '#10b981' ? 'linear-gradient(90deg,#059669,#34d399)'
