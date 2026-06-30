@@ -48,14 +48,19 @@ export function getTotalDays(period: BudgetPeriod): number {
   return Math.round(diffMs / (1000 * 60 * 60 * 24));
 }
 
+const HEBREW_DAYS = ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת'];
+
 export function formatExpenseDate(isoDate: string, createdAt: string): string {
-  const [, month, day] = isoDate.split('-');
+  const [year, month, day] = isoDate.split('-');
+
+  const dateObj = new Date(Number(year), Number(month) - 1, Number(day));
+  const dayName = HEBREW_DAYS[dateObj.getDay()];
 
   const ts = new Date(createdAt);
   const hours   = String(ts.getHours()).padStart(2, '0');
   const minutes = String(ts.getMinutes()).padStart(2, '0');
 
-  return `${day}/${month} ${hours}:${minutes}`;
+  return `${day}/${month} ${dayName} ${hours}:${minutes}`;
 }
 
 export function formatDisplayTime(isoTimestamp: string): string {
