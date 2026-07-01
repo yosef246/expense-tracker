@@ -162,7 +162,7 @@ export default function HistoryScreen() {
           <div style={s.summRow}>
             <Stat label="סה״כ הוצאות" value={formatCurrency(totalSpent)} color="#ef4444" />
             <div style={s.divider} />
-            {!isCurrent && !hasHistory && editingBudget ? (
+            {!isCurrent && editingBudget ? (
               <div style={{ flex: 1, textAlign: 'center' }}>
                 <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 4, fontWeight: '600' }}>תקציב ₪</div>
                 <input
@@ -179,8 +179,8 @@ export default function HistoryScreen() {
                 />
               </div>
             ) : (
-              <div style={{ flex: 1, textAlign: 'center' }} onClick={() => { if (!isCurrent && !hasHistory) { setBudgetInput(String(periodBudget)); setEditingBudget(true); } }}>
-                <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 4, fontWeight: '600' }}>תקציב{!isCurrent && !hasHistory ? ' ✏️' : ''}</div>
+              <div style={{ flex: 1, textAlign: 'center' }} onClick={() => { if (!isCurrent) { setBudgetInput(String(periodBudget)); setEditingBudget(true); } }}>
+                <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 4, fontWeight: '600' }}>{isCurrent ? 'תקציב' : 'תקציב ✏️'}</div>
                 <div style={{ fontSize: 17, fontWeight: '800', color: '#6366f1', direction: 'ltr' }}>{formatCurrency(periodBudget)}</div>
               </div>
             )}
