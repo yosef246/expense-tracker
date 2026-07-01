@@ -113,13 +113,14 @@ export default function HistoryScreen() {
   const startStr = toYMD(period.start);
   const endStr   = toYMD(period.end);
 
-  const list       = expenses.filter(e => e.date >= startStr && e.date < endStr);
-  const totalSpent = list.reduce((s, e) => s + e.amount, 0);
-  const pct        = settings.monthlyBudget > 0 ? (totalSpent / settings.monthlyBudget) * 100 : 0;
-  const barColor   = getProgressColor(pct);
+  const list         = expenses.filter(e => e.date >= startStr && e.date < endStr);
+  const totalSpent   = list.reduce((s, e) => s + e.amount, 0);
+  const periodBudget = settings.budgetHistory?.[startStr] ?? settings.monthlyBudget;
+  const pct          = periodBudget > 0 ? (totalSpent / periodBudget) * 100 : 0;
+  const barColor     = getProgressColor(pct);
 
   const isCurrent = toYMD(now) >= startStr && toYMD(now) < endStr;
-  const unspent    = settings.monthlyBudget - totalSpent;
+  const unspent    = periodBudget - totalSpent;
   const days      = isCurrent ? getDaysElapsed(period, now) : getTotalDays(period);
   const dailyAvg  = days > 0 ? totalSpent / days : 0;
   const biggest   = list.reduce<typeof list[0] | null>((mx, e) => (!mx || e.amount > mx.amount ? e : mx), null);
@@ -157,7 +158,7 @@ export default function HistoryScreen() {
           <div style={s.summRow}>
             <Stat label="סה״כ הוצאות" value={formatCurrency(totalSpent)} color="#ef4444" />
             <div style={s.divider} />
-            <Stat label="תקציב" value={formatCurrency(settings.monthlyBudget)} color="#6366f1" />
+            <Stat label="תקציב" value={formatCurrency(periodBudget)} color="#6366f1" />
             <div style={s.divider} />
             <Stat label="ניצול" value={`${pct.toFixed(0)}%`} color={barColor} />
           </div>

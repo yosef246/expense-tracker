@@ -1,22 +1,58 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSettings } from '../hooks/useSettings';
+import { useExpenses } from '../hooks/useExpenses';
+import { getBudgetPeriod, toYMD } from '../utils/getBudgetPeriod';
+import { HEBREW_MONTH_NAMES } from '../utils/dateHelpers';
+
 export default function SettingsScreen() {
   const navigate = useNavigate();
   const { settings, saveSettings } = useSettings();
+  const { expenses } = useExpenses();
 
   const [budget,   setBudget]  = useState(String(settings.monthlyBudget));
   const [startDay, setStart]   = useState<1 | 10>(settings.monthStartDay);
   const [warning,  setWarning] = useState('');
   const [saved,    setSaved]   = useState(false);
 
+  const currentPeriodStart = toYMD(getBudgetPeriod(settings.monthStartDay).start);
+
+  const pastPeriods: { key: string; label: string }[] = [];
+  const seen = new Set<string>();
+  for (const e of expenses) {
+    const [y, m, d] = e.date.split('-').map(Number);
+    const key = toYMD(getBudgetPeriod(settings.monthStartDay, new Date(y, m - 1, d)).start);
+    if (key !== currentPeriodStart && !seen.has(key)) {
+      seen.add(key);
+      const dt = new Date(y, m - 1, d);
+      const period = getBudgetPeriod(settings.monthStartDay, dt);
+      pastPeriods.push({ key, label: `${HEBREW_MONTH_NAMES[period.start.getMonth()]} ${period.start.getFullYear()}` });
+    }
+  }
+  pastPeriods.sort((a, b) => b.key.localeCompare(a.key));
+
+  const [histEdits, setHistEdits] = useState<Record<string, string>>(() => {
+    const init: Record<string, string> = {};
+    for (const p of pastPeriods) {
+      init[p.key] = String(settings.budgetHistory?.[p.key] ?? settings.monthlyBudget);
+    }
+    return init;
+  });
+
   const handleSave = () => {
     const raw = budget.trim();
     if (!/^\d+$/.test(raw))      { setWarning('יש להזין מספר שלם בלבד'); return; }
     const n = parseInt(raw, 10);
     if (n <= 0)                   { setWarning('התקציב חייב להיות גדול מאפס'); return; }
+
+    const extraHistory: Record<string, number> = {};
+    for (const [key, val] of Object.entries(histEdits)) {
+      const num = parseInt(val, 10);
+      if (num > 0) extraHistory[key] = num;
+    }
+
     setWarning('');
-    saveSettings({ monthlyBudget: n, monthStartDay: startDay });
+    saveSettings({ monthlyBudget: n, monthStartDay: startDay, budgetHistory: { ...(settings.budgetHistory || {}), ...extraHistory } });
     setSaved(true);
     setTimeout(() => { setSaved(false); navigate('/'); }, 900);
   };
@@ -64,6 +100,27 @@ export default function SettingsScreen() {
             </div>
           </div>
         </div>
+
+        {pastPeriods.length > 0 && (
+          <div style={s.card}>
+            <div style={s.cardIcon}>📜</div>
+            <div style={s.cardBody}>
+              <div style={s.cardLabel}>תקציב חודשים קודמים (לתיקון)</div>
+              {pastPeriods.map(p => (
+                <div key={p.key} style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+                  <span style={{ fontSize: 13, fontWeight: '700', color: '#64748b', flex: 1, textAlign: 'right' }}>{p.label}</span>
+                  <input
+                    style={{ ...s.inp, width: 110, fontSize: 15 }}
+                    type="number"
+                    inputMode="numeric"
+                    value={histEdits[p.key] ?? ''}
+                    onChange={e => setHistEdits(prev => ({ ...prev, [p.key]: e.target.value }))}
+                  />
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         <button
           style={{ ...s.saveBtn, background: saved ? 'linear-gradient(135deg,#059669,#34d399)' : 'linear-gradient(135deg,#6366f1,#8b5cf6)' }}
