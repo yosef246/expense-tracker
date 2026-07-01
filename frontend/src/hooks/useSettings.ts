@@ -6,7 +6,12 @@ import { getBudgetPeriod, toYMD } from '../utils/getBudgetPeriod';
 
 export function useSettings() {
   const [settings, setSettings] = useState<Settings>(() => {
-    const s = storage.loadSettings();
+    let s = storage.loadSettings();
+    if (!localStorage.getItem('budgetHistoryV2')) {
+      s = { ...s, budgetHistory: {} };
+      storage.saveSettings(s);
+      localStorage.setItem('budgetHistoryV2', '1');
+    }
     const periodStart = toYMD(getBudgetPeriod(s.monthStartDay).start);
     if (!s.budgetHistory?.[periodStart]) {
       const updated: Settings = {
