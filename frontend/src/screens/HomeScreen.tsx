@@ -233,7 +233,7 @@ export default function HomeScreen() {
   const pct            = settings.monthlyBudget > 0 ? (totalSpent / settings.monthlyBudget) * 100 : 0;
   const barColor       = getProgressColor(pct);
   const barWidth       = Math.min(pct, 100);
-  const recent         = expenses.slice(0, 5);
+  const recent         = periodExpenses.slice(0, 5);
   const msg            = getBudgetMsg(pct, userName);
 
   const [editing, setEditing] = useState<Expense | null>(null);
