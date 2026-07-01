@@ -21,7 +21,7 @@ function getBudgetMsg(pct: number, name: string) {
   return               { emoji: '🌟', text: `${n}, מעולה! את/ה בשליטה מלאה על התקציב`,                                                           bg: '#f0fdf4', color: '#059669' };
 }
 
-function WeeklySummary({ expenses }: { expenses: Expense[] }) {
+function WeeklySummary({ expenses, periodStartStr }: { expenses: Expense[]; periodStartStr: string }) {
   const now    = new Date();
   const nowStr = dateToYMD(now);
 
@@ -33,8 +33,9 @@ function WeeklySummary({ expenses }: { expenses: Expense[] }) {
   const lastStartStr = dateToYMD(lastStart);
   const lastEndStr   = dateToYMD(lastEnd);
 
-  const thisWeek = expenses.filter(e => e.date >= thisStartStr && e.date <= nowStr);
-  const lastWeek = expenses.filter(e => e.date >= lastStartStr && e.date <= lastEndStr);
+  const effectiveStart = thisStartStr > periodStartStr ? thisStartStr : periodStartStr;
+  const thisWeek = expenses.filter(e => e.date >= effectiveStart && e.date <= nowStr);
+  const lastWeek = expenses.filter(e => e.date >= lastStartStr && e.date <= lastEndStr && e.date >= periodStartStr);
 
   const thisTotal = thisWeek.reduce((s, e) => s + e.amount, 0);
   const lastTotal = lastWeek.reduce((s, e) => s + e.amount, 0);
@@ -307,7 +308,7 @@ export default function HomeScreen() {
           <span style={{ ...s.msgText, color: msg.color }}>{msg.text}</span>
         </div>
 
-        <WeeklySummary expenses={expenses} />
+        <WeeklySummary expenses={expenses} periodStartStr={startStr} />
 
         <LastMonthRow expenses={expenses} settings={settings} />
 
