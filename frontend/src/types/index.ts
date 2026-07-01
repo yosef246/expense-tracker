@@ -12,7 +12,6 @@ export interface Expense {
 export interface Settings {
   monthlyBudget: number;
   monthStartDay: 1 | 10;
-  budgetHistory?: Record<string, number>;
 }
 
 export interface BudgetPeriod {
