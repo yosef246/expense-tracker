@@ -164,18 +164,15 @@ export default function HistoryScreen() {
           <div style={s.track}>
             <div style={{ ...s.fill, width: `${Math.min(pct, 100)}%`, background: barGrad }} />
           </div>
-          {!isCurrent && unspent > 0 && (
-            <div style={s.unspentRow}>
-              <span>💚 לא בוזבז:</span>
-              <span style={s.unspentAmt}>{formatCurrency(unspent)}</span>
-            </div>
-          )}
         </div>
 
         {list.length > 0 && (
           <div style={s.insights}>
             <div style={s.insLine}>💸 הוצאה הגדולה: <b>{biggest?.description || '—'}</b> ({formatCurrency(biggest?.amount ?? 0)})</div>
             <div style={s.insLine}>📅 ממוצע יומי: <b>{formatCurrency(dailyAvg)}</b></div>
+            {!isCurrent && unspent > 0 && (
+              <div style={s.insLine}>💚 סכום שלא בוזבז: <b>{formatCurrency(unspent)}</b></div>
+            )}
           </div>
         )}
 
@@ -235,9 +232,7 @@ const s: Record<string, React.CSSProperties> = {
   track:    { height: 10, borderRadius: 6, background: '#e2e8f0', overflow: 'hidden' },
   fill:     { height: '100%', borderRadius: 6, transition: 'width 0.6s ease' },
 
-  unspentRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 10, paddingTop: 10, borderTop: '1px solid #e2e8f0', fontSize: 13, fontWeight: '700', color: '#15803d', direction: 'rtl' as const },
-  unspentAmt: { fontSize: 15, fontWeight: '800', color: '#059669', direction: 'ltr' as const },
-  insights: { background: 'linear-gradient(135deg,#eef2ff,#f5f3ff)', border: '1.5px solid #c7d2fe', borderRadius: 14, padding: '14px 16px', marginBottom: 14, color: '#4338ca' },
+  insights:{ background: 'linear-gradient(135deg,#eef2ff,#f5f3ff)', border: '1.5px solid #c7d2fe', borderRadius: 14, padding: '14px 16px', marginBottom: 14, color: '#4338ca' },
   insLine:  { fontSize: 13, lineHeight: '1.7', direction: 'rtl' as const },
 
   secTitle: { fontSize: 14, fontWeight: '700', color: '#64748b', marginBottom: 10, letterSpacing: 0.2 },
