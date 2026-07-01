@@ -236,6 +236,10 @@ export default function HomeScreen() {
   const recent         = periodExpenses.slice(0, 5);
   const msg            = getBudgetMsg(pct, userName);
 
+  const now = new Date();
+  const daysUntilEnd = Math.ceil((period.end.getTime() - now.getTime()) / (1000 * 60 * 60 * 24));
+  const showSavingsBanner = daysUntilEnd <= 3 && daysUntilEnd >= 0 && remaining > 0 && pct < 100;
+
   const [editing, setEditing] = useState<Expense | null>(null);
 
   const barGrad = barColor === '#10b981' ? 'linear-gradient(90deg,#059669,#34d399)'
@@ -287,6 +291,16 @@ export default function HomeScreen() {
             <div style={{ flex: 1 }}>
               <div style={s.resetTitle}>שנה טובה! ברוך הבא ל-{currentYear}</div>
               <div style={s.resetSub}>כל ההוצאות אופסו לקראת השנה החדשה. לא ניתן לשחזר את הנתונים הישנים.</div>
+            </div>
+          </div>
+        )}
+
+        {showSavingsBanner && (
+          <div style={s.savingsBanner}>
+            <span style={{ fontSize: 22, flexShrink: 0 }}>💰</span>
+            <div style={{ flex: 1 }}>
+              <div style={s.savingsTitle}>כל הכבוד, {userName.split(' ')[0]}!</div>
+              <div style={s.savingsSub}>נשאר לך <b>{formatCurrency(remaining)}</b> שלא בזבזת — מצויין, חסכת עוד כסף! 🎉</div>
             </div>
           </div>
         )}
@@ -387,9 +401,12 @@ const s: Record<string, React.CSSProperties> = {
   resetBanner:{ display: 'flex', gap: 12, alignItems: 'flex-start', background: '#f0fdf4', border: '1.5px solid #86efac', borderRadius: 14, padding: '14px 16px', marginBottom: 14, direction: 'rtl' as const },
   resetTitle: { fontSize: 15, fontWeight: '800', color: '#15803d', marginBottom: 4 },
   resetSub:   { fontSize: 13, color: '#166534', lineHeight: '1.5' },
-  eoyBanner:  { display: 'flex', gap: 12, alignItems: 'flex-start', background: '#fff7ed', border: '1.5px solid #fed7aa', borderRadius: 14, padding: '14px 16px', marginBottom: 14, direction: 'rtl' as const },
-  eoyTitle:   { fontSize: 15, fontWeight: '800', color: '#c2410c', marginBottom: 4 },
-  eoySub:     { fontSize: 13, color: '#9a3412', lineHeight: '1.5' },
+  eoyBanner:     { display: 'flex', gap: 12, alignItems: 'flex-start', background: '#fff7ed', border: '1.5px solid #fed7aa', borderRadius: 14, padding: '14px 16px', marginBottom: 14, direction: 'rtl' as const },
+  eoyTitle:      { fontSize: 15, fontWeight: '800', color: '#c2410c', marginBottom: 4 },
+  eoySub:        { fontSize: 13, color: '#9a3412', lineHeight: '1.5' },
+  savingsBanner: { display: 'flex', gap: 12, alignItems: 'flex-start', background: '#f0fdf4', border: '1.5px solid #86efac', borderRadius: 14, padding: '14px 16px', marginBottom: 14, direction: 'rtl' as const },
+  savingsTitle:  { fontSize: 15, fontWeight: '800', color: '#15803d', marginBottom: 4 },
+  savingsSub:    { fontSize: 13, color: '#166534', lineHeight: '1.5' },
   fab:        { position: 'fixed', bottom: 28, right: 'calc(max(0px,(100vw - 480px)/2) + 20px)', width: 58, height: 58, borderRadius: '50%', background: 'linear-gradient(135deg,#6366f1,#8b5cf6)', color: 'white', fontSize: 26, boxShadow: '0 6px 24px rgba(99,102,241,0.5)', border: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' },
 };
 
