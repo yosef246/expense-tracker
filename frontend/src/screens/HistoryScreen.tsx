@@ -105,16 +105,20 @@ const p: Record<string, React.CSSProperties> = {
 export default function HistoryScreen() {
   const navigate = useNavigate();
   const { expenses, deleteExpense } = useExpenses();
-  const { settings } = useSettings();
+  const { settings, setPeriodBudget } = useSettings();
 
   const now = new Date();
   const [viewDate, setViewDate] = useState(new Date());
+  const [editingBudget, setEditingBudget] = useState(false);
+  const [budgetInput, setBudgetInput] = useState('');
+
   const period   = getBudgetPeriod(settings.monthStartDay, viewDate);
   const startStr = toYMD(period.start);
   const endStr   = toYMD(period.end);
 
   const list         = expenses.filter(e => e.date >= startStr && e.date < endStr);
   const totalSpent   = list.reduce((s, e) => s + e.amount, 0);
+  const hasHistory   = !!settings.budgetHistory?.[startStr];
   const periodBudget = settings.budgetHistory?.[startStr] ?? settings.monthlyBudget;
   const pct          = periodBudget > 0 ? (totalSpent / periodBudget) * 100 : 0;
   const barColor     = getProgressColor(pct);
@@ -158,7 +162,28 @@ export default function HistoryScreen() {
           <div style={s.summRow}>
             <Stat label="סה״כ הוצאות" value={formatCurrency(totalSpent)} color="#ef4444" />
             <div style={s.divider} />
-            <Stat label="תקציב" value={formatCurrency(periodBudget)} color="#6366f1" />
+            {!isCurrent && !hasHistory && editingBudget ? (
+              <div style={{ flex: 1, textAlign: 'center' }}>
+                <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 4, fontWeight: '600' }}>תקציב ₪</div>
+                <input
+                  autoFocus
+                  style={{ width: 80, padding: '4px 8px', borderRadius: 8, border: '2px solid #6366f1', fontSize: 15, fontWeight: '800', textAlign: 'center', color: '#6366f1' }}
+                  type="number" inputMode="numeric"
+                  value={budgetInput}
+                  onChange={e => setBudgetInput(e.target.value)}
+                  onBlur={() => {
+                    const n = parseInt(budgetInput, 10);
+                    if (n > 0) setPeriodBudget(startStr, n);
+                    setEditingBudget(false);
+                  }}
+                />
+              </div>
+            ) : (
+              <div style={{ flex: 1, textAlign: 'center' }} onClick={() => { if (!isCurrent && !hasHistory) { setBudgetInput(String(periodBudget)); setEditingBudget(true); } }}>
+                <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 4, fontWeight: '600' }}>תקציב{!isCurrent && !hasHistory ? ' ✏️' : ''}</div>
+                <div style={{ fontSize: 17, fontWeight: '800', color: '#6366f1', direction: 'ltr' }}>{formatCurrency(periodBudget)}</div>
+              </div>
+            )}
             <div style={s.divider} />
             <Stat label="ניצול" value={`${pct.toFixed(0)}%`} color={barColor} />
           </div>

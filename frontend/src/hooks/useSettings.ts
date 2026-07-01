@@ -46,5 +46,14 @@ export function useSettings() {
     setSettings(updated);
   }, [settings]);
 
-  return { settings, saveSettings };
+  const setPeriodBudget = useCallback((periodKey: string, budget: number) => {
+    const updated: Settings = {
+      ...settings,
+      budgetHistory: { ...(settings.budgetHistory || {}), [periodKey]: budget },
+    };
+    storage.saveSettings(updated);
+    setSettings(updated);
+  }, [settings]);
+
+  return { settings, saveSettings, setPeriodBudget };
 }
