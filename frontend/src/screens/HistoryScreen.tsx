@@ -119,6 +119,7 @@ export default function HistoryScreen() {
   const barColor   = getProgressColor(pct);
 
   const isCurrent = toYMD(now) >= startStr && toYMD(now) < endStr;
+  const unspent    = settings.monthlyBudget - totalSpent;
   const days      = isCurrent ? getDaysElapsed(period, now) : getTotalDays(period);
   const dailyAvg  = days > 0 ? totalSpent / days : 0;
   const biggest   = list.reduce<typeof list[0] | null>((mx, e) => (!mx || e.amount > mx.amount ? e : mx), null);
@@ -163,6 +164,12 @@ export default function HistoryScreen() {
           <div style={s.track}>
             <div style={{ ...s.fill, width: `${Math.min(pct, 100)}%`, background: barGrad }} />
           </div>
+          {!isCurrent && unspent > 0 && (
+            <div style={s.unspentRow}>
+              <span>💚 לא בוזבז:</span>
+              <span style={s.unspentAmt}>{formatCurrency(unspent)}</span>
+            </div>
+          )}
         </div>
 
         {list.length > 0 && (
@@ -228,6 +235,8 @@ const s: Record<string, React.CSSProperties> = {
   track:    { height: 10, borderRadius: 6, background: '#e2e8f0', overflow: 'hidden' },
   fill:     { height: '100%', borderRadius: 6, transition: 'width 0.6s ease' },
 
+  unspentRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: 10, paddingTop: 10, borderTop: '1px solid #e2e8f0', fontSize: 13, fontWeight: '700', color: '#15803d', direction: 'rtl' as const },
+  unspentAmt: { fontSize: 15, fontWeight: '800', color: '#059669', direction: 'ltr' as const },
   insights: { background: 'linear-gradient(135deg,#eef2ff,#f5f3ff)', border: '1.5px solid #c7d2fe', borderRadius: 14, padding: '14px 16px', marginBottom: 14, color: '#4338ca' },
   insLine:  { fontSize: 13, lineHeight: '1.7', direction: 'rtl' as const },
 
